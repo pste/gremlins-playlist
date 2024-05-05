@@ -1,0 +1,37 @@
+{
+  "name": "gremlins-playlist",
+  "version": "0.0.0",
+  "description": "playlist generator for gremlins live shows",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:unit": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pste/gremlins-playlist.git"
+  },
+  "author": "pirraste",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pste/gremlins-playlist/issues"
+  },
+  "homepage": "https://github.com/pste/gremlins-playlist#readme",
+  "dependencies": {
+    "moment": "^2.30.1",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
+    "vuedraggable": "^4.1.0",
+    "vuetify": "^3.6.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/test-utils": "^2.4.5",
+    "jsdom": "^24.0.0",
+    "vite": "^5.2.8",
+    "vitest": "^1.4.0"
+  }
+}
