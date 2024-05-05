@@ -1,6 +1,6 @@
 # gremlins-playlist
 
-This template should help get you started developing with Vue 3 in Vite.
+Playlist maker for live shows (made with Vue3 and Vuetify)
 
 ## Recommended IDE Setup
 

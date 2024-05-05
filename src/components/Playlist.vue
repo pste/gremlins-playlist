@@ -9,7 +9,7 @@ import SupportIcon from './icons/IconSupport.vue'*/
 // libs
 import moment from 'moment'
 // vue
-import { defineComponent, ref } from 'vue'
+import { defineComponent, computed, ref, toRaw } from 'vue'
 import draggable from 'vuedraggable'
 
 defineComponent({
@@ -18,43 +18,80 @@ defineComponent({
     },
 })
 
-//
-import fulllist from '@/assets/songs.json' 
-const songs = ref(fulllist.map(elem => {
-    elem.active = true
-    return elem
-}));
-/*
-function renderTime( secs ) {
-    return secs // moment.duration('00'secs).humanize();
-}*/
+// init
+import fulllist from '@/assets/songs.json'
+fulllist.forEach(elem => {
+    elem.active = true;
+});
+
+// data
+const activeSongs = ref(fulllist);
+const inactiveSongs = ref([]);
+const deadTimeSecs = ref(30)
+
+// methods
+function add( idx ) {
+    let rm = inactiveSongs.value.splice(idx, 1);
+    activeSongs.value.push(rm[0]);
+}
+
+function toggle( idx ) {
+    let rm = activeSongs.value.splice(idx, 1);
+    inactiveSongs.value.push(rm[0]);
+}
+
+// computed
+const totalTime = computed(() => {
+    let secs = activeSongs.value.reduce((acc, elem) => {
+        let song = toRaw(elem);
+        let time = (song.duration.length === 4) ? "00:0"+song.duration : "00:"+song.duration; // to have this fmt: 00:04:35
+        return acc + moment.duration(time).as('seconds') + deadTimeSecs.value
+    }, 0);
+    return moment.utc(secs * 1000).format("HH:mm:ss")// 'aaa' + moment.utc(moment.duration(secs * 1000)).format("HH:mm:ss")
+})
 </script>
 
 <template>
-    <v-list density="compact" >
-        <v-list-subheader>CASALE</v-list-subheader>
+    <v-slider
+        v-model="deadTimeSecs"
+        :max="120"
+        :min="5"
+        :step="5"
+        thumb-label
+        prepend-icon="mdi-clock-outline"
+    ></v-slider>
 
-        <!--<draggable v-model="songs" 
+    <v-list density="compact" >
+        <v-list-subheader>CASALE {{ totalTime }}</v-list-subheader>
+
+        <draggable v-model="activeSongs" 
                     item-key="title"
                     style="min-height: 10px">
-            <template #item="{element}">
+            <template #item="{ element, index }">
             <v-list-item>
-                -->
-                
-                <v-list-item  v-for="(element, i) in songs" :key="i">
+                <!--<v-list-item  v-for="(element, i) in songs" :key="i">-->
                     <template v-slot:prepend>
                         <v-icon icon="mdi-check-circle" 
                             color="primary"
+                            @click="toggle(index)"
                         ></v-icon>
-                        <!--<v-list-item-action start>
-                            <v-switch :model-value="active" color="primary" ></v-switch>
-                        </v-list-item-action>-->
                     </template>
 
                     {{ element.title }} ({{element.duration}})
                 </v-list-item>
-            <!--</template>
-        </draggable>-->
+            </template>
+        </draggable>
+    </v-list>
+
+    <v-list density="compact" >
+        <v-list-item v-for="(element, index) in inactiveSongs" :key="index">
+            <template v-slot:prepend>
+                        <v-icon icon="mdi-check-circle" 
+                            @click="add(index)"
+                        ></v-icon>
+            </template>
+            {{ element.title }} ({{element.duration}})
+        </v-list-item>
     </v-list>
 </template>
 
