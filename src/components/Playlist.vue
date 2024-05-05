@@ -38,6 +38,9 @@ function add( idx ) {
 function toggle( idx ) {
     let rm = activeSongs.value.splice(idx, 1);
     inactiveSongs.value.push(rm[0]);
+    inactiveSongs.value.sort((a,b) => {
+        return toRaw(a).title > toRaw(b).title
+    })
 }
 
 // computed
