@@ -26,14 +26,18 @@
         prepend-icon="mdi-clock-outline"
     ></v-slider>
 
-    <v-list density="compact" >
-        <v-list-subheader>CASALE {{ totalTime }} ({{activeSongs.length}} brani)</v-list-subheader>
+    <v-toolbar color="deep-purple-lighten-1" density="compact" >
+        <!--<v-btn icon="mdi-menu" variant="text"></v-btn>-->
 
+      <v-toolbar-title>Playlist {{ totalTime }} ({{activeSongs.length}} brani)</v-toolbar-title>
+    </v-toolbar>
+
+    <v-list density="compact" >
         <draggable v-model="activeSongs" 
                     item-key="id"
                     style="min-height: 10px">
             <template #item="{ element, index }">
-            <v-list-item>
+            <v-list-item class="active">
                 <!--<v-list-item  v-for="(element, i) in songs" :key="i">-->
                     <template v-slot:prepend>
                         <v-icon icon="mdi-check-circle" 
@@ -42,7 +46,7 @@
                         ></v-icon>
                     </template>
 
-                    {{ element.title }} ({{element.duration}})
+                    #{{ index }} - {{ element.title }} ({{element.duration}})
                 </v-list-item>
             </template>
         </draggable>
@@ -95,13 +99,13 @@ function sortSongs(arr) {
 
 function add( idx ) {
     let rm = inactiveSongs.value.splice(idx, 1);
-    console.log('add ' + idx + ' ' + rm[0])
+    //console.log('add ' + idx + ' ' + rm[0])
     activeSongs.value.push(rm[0]);
 }
 
 function toggle( idx ) {
     let rm = activeSongs.value.splice(idx, 1);
-    console.log('toggle ' + idx + ' ' + rm[0]);
+    //console.log('toggle ' + idx + ' ' + rm[0]);
     inactiveSongs.value.push(rm[0]);
     inactiveSongs.value = sortSongs(inactiveSongs.value);
 }
@@ -112,7 +116,7 @@ function loadPlaylist() {
     if (urlParams.has('playlistid')) {
         let items = urlParams.get('playlistid').match(/.{1,2}/g); // get param value + split every 2 chars
         let ids = items.map( hexid => Number("0x"+hexid));
-        console.log(items)
+        //console.log(items)
         // reset and reload
         activeSongs.value = [];
         inactiveSongs.value = [];
@@ -124,8 +128,8 @@ function loadPlaylist() {
             }
         })
         inactiveSongs.value = sortSongs(fulllist);
-        console.log("inactive loaded " + inactiveSongs.value.length);
-        console.log("active loaded " + activeSongs.value.length);
+        //console.log("inactive loaded " + inactiveSongs.value.length);
+        //console.log("active loaded " + activeSongs.value.length);
     }
     else {
         activeSongs.value = fulllist;
@@ -171,7 +175,7 @@ loadPlaylist();
 </script>
 
 <style scoped>
-.v-list-item {
+.v-list-item.active {
     cursor:pointer;
 }
 </style>
