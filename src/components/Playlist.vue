@@ -6,6 +6,7 @@
         prepend-icon="mdi-content-copy"
         @click:prepend="copyToClipboard"
     ></v-text-field>
+
     <v-snackbar
       :timeout="2000"
       color="success"
@@ -21,6 +22,7 @@
         :min="5"
         :step="5"
         thumb-label
+        label="song idle time (sec)"
         prepend-icon="mdi-clock-outline"
     ></v-slider>
 
@@ -59,13 +61,6 @@
 </template>
 
 <script setup>
-/*import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'*/
-
 // libs
 import moment from 'moment'
 // vue
@@ -85,7 +80,7 @@ fulllist.forEach(elem => {
 });
 
 // *** data
-const activeSongs = ref(fulllist);
+const activeSongs = ref([]);
 const inactiveSongs = ref([]);
 const deadTimeSecs = ref(30);
 const showCopied = ref(false);
@@ -106,6 +101,7 @@ function add( idx ) {
 
 function toggle( idx ) {
     let rm = activeSongs.value.splice(idx, 1);
+    console.log('toggle ' + idx + ' ' + rm[0]);
     inactiveSongs.value.push(rm[0]);
     inactiveSongs.value = sortSongs(inactiveSongs.value);
 }
@@ -116,16 +112,25 @@ function loadPlaylist() {
     if (urlParams.has('playlistid')) {
         let items = urlParams.get('playlistid').match(/.{1,2}/g); // get param value + split every 2 chars
         let ids = items.map( hexid => Number("0x"+hexid));
+        console.log(items)
         // reset and reload
-        inactiveSongs.value = sortSongs(fulllist.filter(song => {
-            return ids.indexOf(song.id) < 0
-        }));
-        activeSongs.value = fulllist.filter(song => {
-            return ids.indexOf(song.id) >= 0
-        });
+        activeSongs.value = [];
+        inactiveSongs.value = [];
+        ids.forEach( id => {
+            let idx = fulllist.findIndex(el => el.id === id);
+            if (idx >= 0) {
+                let rm = fulllist.splice(idx, 1);
+                activeSongs.value.push(rm[0]);
+            }
+        })
+        inactiveSongs.value = sortSongs(fulllist);
+        console.log("inactive loaded " + inactiveSongs.value.length);
+        console.log("active loaded " + activeSongs.value.length);
+    }
+    else {
+        activeSongs.value = fulllist;
     }
 }
-
 
 // converts a number to a 2 digits hex string value
 function toHex( x ) {
@@ -140,8 +145,6 @@ function toHex( x ) {
 
 // copy to clipboard
 function copyToClipboard() {
-    //this.$refs.playid.focus();
-    //document.execCommand('copy');
     navigator.clipboard.writeText(playlistId.value);
     showCopied.value = true;
 }
