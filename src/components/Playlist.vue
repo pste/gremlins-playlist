@@ -1,69 +1,3 @@
-<template>
-    <v-text-field 
-        readonly 
-        variant="outlined" 
-        :model-value="playlistId"
-        prepend-icon="mdi-content-copy"
-        @click:prepend="copyToClipboard"
-    ></v-text-field>
-
-    <v-snackbar
-      :timeout="2000"
-      color="success"
-      variant="outlined"
-      v-model="showCopied"
-    >
-      Content <strong>copied</strong> to clipboard!
-    </v-snackbar>
-
-    <v-slider
-        v-model="deadTimeSecs"
-        :max="120"
-        :min="5"
-        :step="5"
-        thumb-label
-        label="song idle time (sec)"
-        prepend-icon="mdi-clock-outline"
-    ></v-slider>
-
-    <v-toolbar color="deep-purple-lighten-1" density="compact" >
-        <!--<v-btn icon="mdi-menu" variant="text"></v-btn>-->
-
-      <v-toolbar-title>Playlist {{ totalTime }} ({{activeSongs.length}} brani)</v-toolbar-title>
-    </v-toolbar>
-
-    <v-list density="compact" >
-        <draggable v-model="activeSongs" 
-                    item-key="id"
-                    style="min-height: 10px">
-            <template #item="{ element, index }">
-            <v-list-item class="active">
-                <!--<v-list-item  v-for="(element, i) in songs" :key="i">-->
-                    <template v-slot:prepend>
-                        <v-icon icon="mdi-check-circle" 
-                            color="primary"
-                            @click="toggle(index)"
-                        ></v-icon>
-                    </template>
-
-                    #{{ index }} - {{ element.title }} ({{element.duration}})
-                </v-list-item>
-            </template>
-        </draggable>
-    </v-list>
-
-    <v-list density="compact" >
-        <v-list-item v-for="(element, index) in inactiveSongs" :key="index">
-            <template v-slot:prepend>
-                        <v-icon icon="mdi-check-circle" 
-                            @click="add(index)"
-                        ></v-icon>
-            </template>
-            {{ element.title }} ({{element.duration}})
-        </v-list-item>
-    </v-list>
-</template>
-
 <script setup>
 // libs
 import moment from 'moment'
@@ -87,7 +21,8 @@ fulllist.forEach(elem => {
 const activeSongs = ref([]);
 const inactiveSongs = ref([]);
 const deadTimeSecs = ref(30);
-const showCopied = ref(false);
+const openSnackCopied = ref(false);
+const expandDetails = ref(false);
 
 // *** methods
 function sortSongs(arr) {
@@ -150,7 +85,7 @@ function toHex( x ) {
 // copy to clipboard
 function copyToClipboard() {
     navigator.clipboard.writeText(playlistId.value);
-    showCopied.value = true;
+    openSnackCopied.value = true;
 }
 
 // *** computed
@@ -173,6 +108,79 @@ const playlistId = computed(() => {
 //
 loadPlaylist();
 </script>
+
+<template>
+    <v-snackbar
+      :timeout="2000"
+      color="success"
+      v-model="openSnackCopied"
+    >
+      Content <strong>copied</strong> to clipboard!
+    </v-snackbar>
+
+    <v-text-field 
+        readonly 
+        variant="outlined" 
+        :model-value="playlistId"
+        prepend-icon="mdi-content-copy"
+        @click:prepend="copyToClipboard"
+        label="id"
+    ></v-text-field>
+
+    <v-slider
+        v-model="deadTimeSecs"
+        :max="120"
+        :min="5"
+        :step="5"
+        thumb-label="always"
+        label="song idle time (sec)"
+        prepend-icon="mdi-clock-outline"
+    ></v-slider>
+
+    <v-toolbar color="deep-purple-lighten-1" density="compact" >
+        <v-btn 
+                icon="mdi-arrow-expand"
+                @click="expandDetails=!expandDetails"
+                :color="(expandDetails)?'primary':null"
+        ></v-btn>
+        <v-toolbar-title>
+            Playlist Duration {{ totalTime }} ({{activeSongs.length}} brani)
+        </v-toolbar-title>
+    </v-toolbar>
+
+    <v-list density="compact" >
+        <draggable v-model="activeSongs" 
+                    item-key="id"
+                    style="min-height: 10px">
+            <template #item="{ element, index }">
+            <v-list-item class="active">
+                    <template v-slot:prepend>
+                        <v-icon icon="mdi-check-circle" 
+                            color="primary"
+                            @click="toggle(index)"
+                        ></v-icon>
+                    </template>
+                    
+                    <v-row>
+                        <v-col>#{{ index }} - {{ element.title }} ({{element.duration}})</v-col>
+                        <v-col v-if="expandDetails">{{ element.intro }}</v-col>
+                    </v-row>
+                </v-list-item>
+            </template>
+        </draggable>
+    </v-list>
+
+    <v-list density="compact" >
+        <v-list-item v-for="(element, index) in inactiveSongs" :key="index">
+            <template v-slot:prepend>
+                        <v-icon icon="mdi-check-circle" 
+                            @click="add(index)"
+                        ></v-icon>
+            </template>
+            {{ element.title }} ({{element.duration}})
+        </v-list-item>
+    </v-list>
+</template>
 
 <style scoped>
 .v-list-item.active {
