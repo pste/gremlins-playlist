@@ -1,60 +1,20 @@
-<script setup>
-/*import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'*/
-
-// libs
-import moment from 'moment'
-// vue
-import { defineComponent, computed, ref, toRaw } from 'vue'
-import draggable from 'vuedraggable'
-
-defineComponent({
-    components: {
-      draggable,
-    },
-})
-
-// init
-import fulllist from '@/assets/songs.json'
-fulllist.forEach(elem => {
-    elem.active = true;
-});
-
-// data
-const activeSongs = ref(fulllist);
-const inactiveSongs = ref([]);
-const deadTimeSecs = ref(30)
-
-// methods
-function add( idx ) {
-    let rm = inactiveSongs.value.splice(idx, 1);
-    activeSongs.value.push(rm[0]);
-}
-
-function toggle( idx ) {
-    let rm = activeSongs.value.splice(idx, 1);
-    inactiveSongs.value.push(rm[0]);
-    inactiveSongs.value.sort((a,b) => {
-        return toRaw(a).title > toRaw(b).title
-    })
-}
-
-// computed
-const totalTime = computed(() => {
-    let secs = activeSongs.value.reduce((acc, elem) => {
-        let song = toRaw(elem);
-        let time = (song.duration.length === 4) ? "00:0"+song.duration : "00:"+song.duration; // to have this fmt: 00:04:35
-        return acc + moment.duration(time).as('seconds') + deadTimeSecs.value
-    }, 0);
-    return moment.utc(secs * 1000).format("HH:mm:ss")// 'aaa' + moment.utc(moment.duration(secs * 1000)).format("HH:mm:ss")
-})
-</script>
-
 <template>
+    <v-text-field 
+        readonly 
+        variant="outlined" 
+        :model-value="playlistId"
+        prepend-icon="mdi-content-copy"
+        @click:prepend="copyToClipboard"
+    ></v-text-field>
+    <v-snackbar
+      :timeout="2000"
+      color="success"
+      variant="outlined"
+      v-model="showCopied"
+    >
+      Content <strong>copied</strong> to clipboard!
+    </v-snackbar>
+
     <v-slider
         v-model="deadTimeSecs"
         :max="120"
@@ -65,10 +25,10 @@ const totalTime = computed(() => {
     ></v-slider>
 
     <v-list density="compact" >
-        <v-list-subheader>CASALE {{ totalTime }}</v-list-subheader>
+        <v-list-subheader>CASALE {{ totalTime }} ({{activeSongs.length}} brani)</v-list-subheader>
 
         <draggable v-model="activeSongs" 
-                    item-key="title"
+                    item-key="id"
                     style="min-height: 10px">
             <template #item="{ element, index }">
             <v-list-item>
@@ -97,6 +57,115 @@ const totalTime = computed(() => {
         </v-list-item>
     </v-list>
 </template>
+
+<script setup>
+/*import WelcomeItem from './WelcomeItem.vue'
+import DocumentationIcon from './icons/IconDocumentation.vue'
+import ToolingIcon from './icons/IconTooling.vue'
+import EcosystemIcon from './icons/IconEcosystem.vue'
+import CommunityIcon from './icons/IconCommunity.vue'
+import SupportIcon from './icons/IconSupport.vue'*/
+
+// libs
+import moment from 'moment'
+// vue
+import { defineComponent, computed, ref, toRaw, isReactive } from 'vue'
+import draggable from 'vuedraggable'
+
+defineComponent({
+    components: {
+      draggable,
+    },
+})
+
+// *** init
+import fulllist from '@/assets/songs.json'
+fulllist.forEach(elem => {
+    elem.active = true;
+});
+
+// *** data
+const activeSongs = ref(fulllist);
+const inactiveSongs = ref([]);
+const deadTimeSecs = ref(30);
+const showCopied = ref(false);
+
+// *** methods
+function sortSongs(arr) {
+    arr.sort((a,b) => {
+        return a.title > b.title
+    });
+    return arr;
+}
+
+function add( idx ) {
+    let rm = inactiveSongs.value.splice(idx, 1);
+    console.log('add ' + idx + ' ' + rm[0])
+    activeSongs.value.push(rm[0]);
+}
+
+function toggle( idx ) {
+    let rm = activeSongs.value.splice(idx, 1);
+    inactiveSongs.value.push(rm[0]);
+    inactiveSongs.value = sortSongs(inactiveSongs.value);
+}
+
+// read the querystring to get and load a playlist
+function loadPlaylist() {
+    let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('playlistid')) {
+        let items = urlParams.get('playlistid').match(/.{1,2}/g); // get param value + split every 2 chars
+        let ids = items.map( hexid => Number("0x"+hexid));
+        // reset and reload
+        inactiveSongs.value = sortSongs(fulllist.filter(song => {
+            return ids.indexOf(song.id) < 0
+        }));
+        activeSongs.value = fulllist.filter(song => {
+            return ids.indexOf(song.id) >= 0
+        });
+    }
+}
+
+
+// converts a number to a 2 digits hex string value
+function toHex( x ) {
+    let rtn = x.toString(16);
+    if (rtn.length === 1) {
+        return '0' + rtn;
+    }
+    else {
+        return rtn
+    }
+}
+
+// copy to clipboard
+function copyToClipboard() {
+    //this.$refs.playid.focus();
+    //document.execCommand('copy');
+    navigator.clipboard.writeText(playlistId.value);
+    showCopied.value = true;
+}
+
+// *** computed
+const totalTime = computed(() => {
+    let secs = activeSongs.value.reduce((acc, song) => {
+        let duration = isReactive(song)? toRaw(song).duration : song.duration;
+        let time = (duration.length === 4) ? "00:0"+duration : "00:"+duration; // to have this fmt: 00:04:35
+        return acc + moment.duration(time).as('seconds') + deadTimeSecs.value
+    }, 0);
+    return moment.utc(secs * 1000).format("HH:mm:ss");
+})
+
+const playlistId = computed(() => {
+    return activeSongs.value.reduce((acc, song) => {
+        let id = isReactive(song)? toRaw(song).id : song.id;
+        return acc + toHex(id);
+    }, '');
+})
+
+//
+loadPlaylist();
+</script>
 
 <style scoped>
 .v-list-item {
