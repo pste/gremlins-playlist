@@ -45,6 +45,18 @@ function toggle( idx ) {
     inactiveSongs.value = sortSongs(inactiveSongs.value);
 }
 
+function copyTable() {
+    let data = `${ playlistId.value }\t${ totalTime.value } (${ activeSongs.value.length })\n`
+    //
+    activeSongs.value.forEach(item => {
+        let song = isReactive(item)? toRaw(item) : item;
+        data += song.title + '\t' + song.intro + '\t\t' + song.bpm.join(',') + '\n';
+    })
+    //
+    navigator.clipboard.writeText(data);
+    openSnackCopied.value = true;
+}
+
 // read the querystring to get and load a playlist
 function loadPlaylist() {
     let urlParams = new URLSearchParams(window.location.search);
@@ -142,6 +154,12 @@ loadPlaylist();
                 @click="expandDetails=!expandDetails"
                 :color="(expandDetails)?'primary':null"
         ></v-btn>
+
+        <v-btn 
+                icon="mdi-content-copy"
+                @click="copyTable"
+        ></v-btn>
+
         <v-toolbar-title>
             Playlist Duration {{ totalTime }} ({{activeSongs.length}} brani)
         </v-toolbar-title>
