@@ -161,7 +161,7 @@ loadPlaylist();
                     </template>
                     
                     <v-row>
-                        <v-col>#{{ index }} - {{ element.title }} ({{element.duration}})</v-col>
+                        <v-col>#{{ index+1 }} - {{ element.title }} ({{element.duration}})</v-col>
                         <v-col v-if="expandDetails">{{ element.intro }}</v-col>
                     </v-row>
                 </v-list-item>
