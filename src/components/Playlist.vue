@@ -132,8 +132,7 @@ loadPlaylist();
         :max="120"
         :min="5"
         :step="5"
-        thumb-label="always"
-        label="song idle time (sec)"
+        :label="'song idle time ('+deadTimeSecs+' sec)'"
         prepend-icon="mdi-clock-outline"
     ></v-slider>
 
