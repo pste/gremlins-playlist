@@ -149,6 +149,10 @@ loadPlaylist();
     ></v-slider>
 
     <v-toolbar color="deep-purple-lighten-1" density="compact" >
+        <v-toolbar-title>
+            Duration {{ totalTime }} ({{activeSongs.length}} brani)
+        </v-toolbar-title>
+
         <v-btn 
                 icon="mdi-arrow-expand"
                 @click="expandDetails=!expandDetails"
@@ -159,23 +163,18 @@ loadPlaylist();
                 icon="mdi-content-copy"
                 @click="copyTable"
         ></v-btn>
-
-        <v-toolbar-title>
-            Playlist Duration {{ totalTime }} ({{activeSongs.length}} brani)
-        </v-toolbar-title>
     </v-toolbar>
 
     <v-list density="compact" >
         <draggable v-model="activeSongs" 
                     item-key="id"
+                    handle=".handle"
                     style="min-height: 10px">
             <template #item="{ element, index }">
             <v-list-item class="active">
                     <template v-slot:prepend>
-                        <v-icon icon="mdi-check-circle" 
-                            color="primary"
-                            @click="toggle(index)"
-                        ></v-icon>
+                        <v-icon icon="mdi-minus-circle-outline" @click="toggle(index)" ></v-icon>
+                        <v-icon icon="mdi-drag" class="handle"></v-icon>
                     </template>
                     
                     <v-row>
@@ -190,7 +189,7 @@ loadPlaylist();
     <v-list density="compact" >
         <v-list-item v-for="(element, index) in inactiveSongs" :key="index">
             <template v-slot:prepend>
-                        <v-icon icon="mdi-check-circle" 
+                        <v-icon icon="mdi-plus-circle-outline" 
                             @click="add(index)"
                         ></v-icon>
             </template>
@@ -200,7 +199,7 @@ loadPlaylist();
 </template>
 
 <style scoped>
-.v-list-item.active {
+.handle {
     cursor:pointer;
 }
 </style>
