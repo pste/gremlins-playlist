@@ -24,3 +24,4 @@ coverage
 *.sw?
 
 private/
+*.local

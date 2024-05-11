@@ -62,7 +62,7 @@ function loadPlaylist() {
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('playlistid')) {
         let items = urlParams.get('playlistid').match(/.{1,2}/g); // get param value + split every 2 chars
-        let ids = items.map( hexid => Number("0x"+hexid));
+        let ids = items.map( hexid => Number('0x'+hexid));
         //console.log(items)
         // reset and reload
         activeSongs.value = [];
@@ -96,7 +96,8 @@ function toHex( x ) {
 
 // copy to clipboard
 function copyToClipboard() {
-    navigator.clipboard.writeText(playlistId.value);
+    const url = `${import.meta.env.VITE_PAGEURL}/?playlistid=${playlistId.value}`
+    navigator.clipboard.writeText(url);
     openSnackCopied.value = true;
 }
 
