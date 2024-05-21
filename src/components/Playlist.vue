@@ -88,13 +88,13 @@ function loadPlaylist() {
 async function playPause(url) {
     var audio = document.getElementById("audioplayer");
     if (url) {
-        this.nowPlaying = url;
+        nowPlaying = url;
         audio.load()
         audio.play();
     } else {
         audio.pause();
         audio.currentTime = 0;
-        this.nowPlaying = '';
+        nowPlaying = '';
     }
 }
 
