@@ -23,6 +23,7 @@ const inactiveSongs = ref([]);
 const deadTimeSecs = ref(30);
 const openSnackCopied = ref(false);
 const expandDetails = ref(false);
+const nowPlaying = ref('');
 
 // *** methods
 function sortSongs(arr) {
@@ -80,6 +81,20 @@ function loadPlaylist() {
     }
     else {
         activeSongs.value = fulllist;
+    }
+}
+
+// play/pause a song
+async function playPause(url) {
+    var audio = document.getElementById("audioplayer");
+    if (url) {
+        this.nowPlaying = url;
+        audio.load()
+        audio.play();
+    } else {
+        audio.pause();
+        audio.currentTime = 0;
+        this.nowPlaying = '';
     }
 }
 
@@ -175,7 +190,9 @@ loadPlaylist();
             <v-list-item class="active">
                     <template v-slot:prepend>
                         <v-icon icon="mdi-minus-circle-outline" @click="toggle(index)" ></v-icon>
-                        <v-icon icon="mdi-drag" class="handle"></v-icon>
+                        <v-icon icon="mdi-drag" class="handle"></v-icon>                        
+                        <v-icon icon="mdi-stop-circle-outline" v-if="nowPlaying === element.url" @click="playPause()"></v-icon>
+                        <v-icon icon="mdi-play-circle-outline" v-else-if="element.url" @click="playPause(element.url)"></v-icon>
                     </template>
                     
                     <v-row>
@@ -197,6 +214,10 @@ loadPlaylist();
             {{ element.title }} ({{element.duration}})
         </v-list-item>
     </v-list>
+    
+    <audio id="audioplayer" hidden="true" controls>
+        <source :src="nowPlaying" type="audio/mpeg">
+    </audio>
 </template>
 
 <style scoped>
