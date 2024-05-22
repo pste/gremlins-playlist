@@ -1,4 +1,5 @@
 <script setup>
+import PlayButton from './PlayButton.vue'
 // libs
 import moment from 'moment'
 // vue
@@ -87,14 +88,14 @@ function loadPlaylist() {
 // play/pause a song
 async function playPause(url) {
     var audio = document.getElementById("audioplayer");
-    if (url) {
-        nowPlaying.value = url;
-        audio.load()
-        audio.play();
-    } else {
+    if (nowPlaying.value === url) {
         audio.pause();
         audio.currentTime = 0;
         nowPlaying.value = '';
+    } else {
+        nowPlaying.value = url;
+        audio.load()
+        audio.play();       
     }
 }
 
@@ -190,13 +191,23 @@ loadPlaylist();
             <v-list-item class="active">
                     <template v-slot:prepend>
                         <v-icon icon="mdi-minus-circle-outline" @click="toggle(index)" ></v-icon>
-                        <v-icon icon="mdi-drag" class="handle"></v-icon>                        
+                        <v-icon icon="mdi-drag" class="handle clickable"></v-icon>
+                        <!--
                         <v-icon icon="mdi-stop-circle-outline" v-if="nowPlaying === element.url" @click="playPause()"></v-icon>
                         <v-icon icon="mdi-play-circle-outline" v-else-if="element.url" @click="playPause(element.url)"></v-icon>
+                        -->
                     </template>
                     
                     <v-row>
-                        <v-col>#{{ index+1 }} - {{ element.title }} ({{element.duration}})</v-col>
+                        <v-col>
+                            #{{ index+1 }}
+                            <PlayButton 
+                                :url="element.url" 
+                                :nowPlaying="nowPlaying" 
+                                :text="element.title +' ('+ element.duration +')'"
+                                @click="playPause(element.url)" 
+                            />
+                        </v-col>
                         <v-col v-if="expandDetails">{{ element.intro }}</v-col>
                     </v-row>
                 </v-list-item>
@@ -211,17 +222,22 @@ loadPlaylist();
                             @click="add(index)"
                         ></v-icon>
             </template>
-            {{ element.title }} ({{element.duration}})
+            <PlayButton 
+                :url="element.url" 
+                :nowPlaying="nowPlaying"
+                @click="playPause(element.url)" 
+                :text="element.title +' ('+ element.duration +')'"
+            />
         </v-list-item>
     </v-list>
     
     <audio id="audioplayer" hidden="true" controls>
-        <source :src="nowPlaying" type="audio/mpeg">
+        <source :src="nowPlaying" type="audio/mpeg" id="audiosource">
     </audio>
 </template>
 
 <style scoped>
-.handle {
+.clickable {
     cursor:pointer;
 }
 </style>
