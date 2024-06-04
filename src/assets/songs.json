@@ -3,7 +3,7 @@
     { "title": "Another Brick in the Wall", "id": 1, "duration": "6:40", "intro": "DAVE", "bpm": [], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2170699&authkey=!AKL6x-eX2M7lgaY" },
     { "title": "Axel F - The Heat is On", "id": 2, "duration": "5:02", "intro": "CASSA+Dave", "bpm": [118,151], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2170697&authkey=!AA0s4FfZhcFSAgI" },
     { "title": "Bee Hive: Baby I Love You - Freeway", "id": 3, "duration": "3:45", "intro": "KEYB+4", "bpm": [130,145], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2175030&authkey=!ADBmMJhPnrsqJmA" },
-    { "title": "Blues Brothers Mix", "id": 4, "duration": "7:00", "intro": "1,2-1,2,3,4", "bpm": [190], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2160640&authkey=!AE2ZtAnFBcVpUrA" },
+    { "title": "Blues Brothers Mix", "id": 4, "duration": "7:00", "intro": "1,2-1,2,3,4", "bpm": [190], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2176024&authkey=!AK-OCYP3_LP6VIA" },
     { "title": "Buffy Main Theme", "id": 5, "duration": "1:05", "intro": "KEYB+1,2,3,4", "bpm": [], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2155221&authkey=!AFLuE7ueif8mK9o" },
     { "title": "Far From Over", "id": 6, "duration": "3:15", "intro": "1,2,3,4", "bpm": [173], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2155215&authkey=!AOhhwdOpUTPTfrc" },
     { "title": "Footloose", "id": 7, "duration": "2:53", "intro": "DRUMS", "bpm": [174], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2154781&authkey=!AGAizCS8pJZ7h2E" },
@@ -30,4 +30,5 @@
     { "title": "You Can Leave Your Hat on", "id": 28, "duration": "4:45", "intro": "1,2,3", "bpm": [88], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2155219&authkey=!AAfDMt04AMTyZNg" },
     { "title": "You're The Best", "id": 29, "duration": "2:43", "intro": "CASSA+ 1,2,3,4", "bpm": [100], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2170696&authkey=!APqXujtjvOCHtH4" },
     { "title": "Intro", "id": 30, "duration": "1:02", "intro": "BASE", "bpm": [] }
+	{ "title": "Rock Of Ages MIX", "id": 31, "duration": "11:15", "intro": "GUIT", "bpm": [], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2172078&authkey=!AKzG5fA6YD_LcKM" },
 ]
