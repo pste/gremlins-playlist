@@ -179,6 +179,7 @@ loadPlaylist();
         <v-btn 
                 icon="mdi-content-copy"
                 @click="copyTable"
+                v-if="false"
         ></v-btn>
     </v-toolbar>
 
@@ -209,6 +210,7 @@ loadPlaylist();
                             />
                         </v-col>
                         <v-col v-if="expandDetails">{{ element.intro }}</v-col>
+                        <v-col v-if="expandDetails">{{ element.bpm.join(',') }}</v-col>
                     </v-row>
                 </v-list-item>
             </template>
