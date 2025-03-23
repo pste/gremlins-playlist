@@ -30,5 +30,7 @@
     { "title": "You Can Leave Your Hat on", "id": 28, "duration": "4:45", "intro": "1,2,3", "bpm": [88], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2155219&authkey=!AAfDMt04AMTyZNg" },
     { "title": "You're The Best", "id": 29, "duration": "2:43", "intro": "CASSA+ 1,2,3,4", "bpm": [100], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2170696&authkey=!APqXujtjvOCHtH4" },
     { "title": "Intro", "id": 30, "duration": "1:02", "intro": "BASE", "bpm": [] },
-	{ "title": "Rock Of Ages MIX", "id": 31, "duration": "11:15", "intro": "GUIT", "bpm": [], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2172078&authkey=!AKzG5fA6YD_LcKM" }
+	{ "title": "Rock Of Ages MIX", "id": 31, "duration": "11:15", "intro": "GUIT", "bpm": [], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2172078&authkey=!AKzG5fA6YD_LcKM" },
+    { "title": "All Star", "id": 32, "duration": "3:53", "intro": "MAX", "bpm": [105], "url": "" },
+    { "title": "Believe it or not", "id": 33, "duration": "2:50", "intro": "1,2,3,4", "bpm": [115], "url": "" }
 ]

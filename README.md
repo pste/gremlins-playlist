@@ -33,5 +33,3 @@ npm run build
 ```sh
 npm run test:unit
 ```
-
-0100e1b0008190f0a0c071d0618020317
