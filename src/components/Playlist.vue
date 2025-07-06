@@ -179,7 +179,6 @@ loadPlaylist();
         <v-btn 
                 icon="mdi-content-copy"
                 @click="copyTable"
-                v-if="false"
         ></v-btn>
     </v-toolbar>
 
