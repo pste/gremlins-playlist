@@ -21,7 +21,7 @@ fulllist.forEach(elem => {
 // *** data
 const activeSongs = ref([]);
 const inactiveSongs = ref([]);
-const deadTimeSecs = ref(30);
+const deadTimeSecs = ref(20);
 const openSnackCopied = ref(false);
 const expandDetails = ref(false);
 const nowPlaying = ref('');
