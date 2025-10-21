@@ -33,5 +33,6 @@
 	{ "title": "Rock Of Ages MIX", "id": 31, "duration": "11:15", "intro": "GUIT", "bpm": [], "url": "https://onedrive.live.com/download?resid=ABB827575104CECD%2172078&authkey=!AKzG5fA6YD_LcKM" },
     { "title": "All Star", "id": 32, "duration": "3:53", "intro": "MAX", "bpm": [105], "url": "" },
     { "title": "Believe it or not", "id": 33, "duration": "2:50", "intro": "1,2,3,4", "bpm": [115], "url": "" },
-    { "title": "007 James Bond Mix", "id": 34, "duration": "4:26", "intro": "BASE", "bpm": [136,136,148], "url": "" }
+    { "title": "007 James Bond Mix", "id": 34, "duration": "4:26", "intro": "BASE", "bpm": [136,136,148], "url": "" },
+    { "title": "Crazy Train", "id": 35, "duration": "4:57", "intro": "1,2,3,4", "bpm": [], "url": "" }
 ]
