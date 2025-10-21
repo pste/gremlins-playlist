@@ -28,9 +28,7 @@ const nowPlaying = ref('');
 
 // *** methods
 function sortSongs(arr) {
-    arr.sort((a,b) => {
-        return a.title > b.title
-    });
+    arr.sort((a,b) => (a.title < b.title) ? -1 : 1);
     return arr;
 }
 
