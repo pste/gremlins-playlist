@@ -55,6 +55,7 @@ function copyTable() {
     })
     //
     navigator.clipboard.writeText(data)
+    //
     openSnackCopied.value = true
 }
 
@@ -109,7 +110,7 @@ function toHex( x ) {
     }
 }
 
-// copy to clipboard
+// copy playlist id to clipboard
 function copyToClipboard() {
     const url = `${import.meta.env.VITE_PAGEURL}/?playlistid=${playlistId.value}`
     navigator.clipboard.writeText(url);
@@ -145,7 +146,7 @@ onMounted( () => {
       color="success"
       v-model="openSnackCopied"
     >
-      Content <strong>copied</strong> to clipboard!
+      Playlist <strong>copied</strong> to clipboard!
     </v-snackbar>
 
     <v-text-field 
