@@ -3,7 +3,7 @@ import PlayButton from './PlayButton.vue'
 // libs
 import moment from 'moment'
 // vue
-import { defineComponent, computed, ref, toRaw, isReactive } from 'vue'
+import { defineComponent, computed, ref, toRaw, isReactive, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 
 defineComponent({
@@ -48,13 +48,14 @@ function toggle( idx ) {
 function copyTable() {
     let data = `${ playlistId.value }\t${ totalTime.value } (${ activeSongs.value.length })\n`
     //
-    activeSongs.value.forEach(item => {
-        let song = isReactive(item)? toRaw(item) : item;
-        data += song.title + '\t' + song.intro + '\t\t' + song.bpm.join(',') + '\n';
+    activeSongs.value.forEach( (item,idx) => {
+        let song = isReactive(item)? toRaw(item) : item
+        data += `#${idx+1} ${song.title} (${song.duration})\t${song.intro}\t${song.presenter}\t${song.bpm.join(',')}\n`
+        idx++
     })
     //
-    navigator.clipboard.writeText(data);
-    openSnackCopied.value = true;
+    navigator.clipboard.writeText(data)
+    openSnackCopied.value = true
 }
 
 // read the querystring to get and load a playlist
@@ -133,7 +134,9 @@ const playlistId = computed(() => {
 })
 
 //
-loadPlaylist();
+onMounted( () => {
+    loadPlaylist();
+})
 </script>
 
 <template>
@@ -207,6 +210,7 @@ loadPlaylist();
                             />
                         </v-col>
                         <v-col v-if="expandDetails">{{ element.intro }}</v-col>
+                        <v-col v-if="expandDetails">{{ element.presenter }}</v-col>
                         <v-col v-if="expandDetails">{{ element.bpm.join(',') }}</v-col>
                     </v-row>
                 </v-list-item>
