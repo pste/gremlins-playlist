@@ -1,16 +1,20 @@
 <script setup>
-import PlayButton from './PlayButton.vue'
 // libs
 import moment from 'moment'
 // vue
 import { defineComponent, computed, ref, toRaw, isReactive, onMounted } from 'vue'
 import draggable from 'vuedraggable'
+import { useTheme } from 'vuetify'
+
+import PlayButton from './PlayButton.vue'
 
 defineComponent({
     components: {
       draggable,
     },
 })
+
+const theme = useTheme()
 
 // *** init
 import fulllist from '@/assets/songs.json'
@@ -134,6 +138,12 @@ const playlistId = computed(() => {
     }, '');
 })
 
+const toolbarColor = computed(() => {
+  return theme.global.name.value === 'dark' 
+    ? 'deep-purple-lighten-1' 
+    : 'deep-purple-lighten-4'
+})
+
 //
 onMounted( () => {
     loadPlaylist();
@@ -167,7 +177,7 @@ onMounted( () => {
         prepend-icon="mdi-clock-outline"
     ></v-slider>
 
-    <v-toolbar color="deep-purple-lighten-1" density="compact" >
+    <v-toolbar :color="toolbarColor" density="compact" >
         <v-toolbar-title>
             Duration {{ totalTime }} ({{activeSongs.length}} brani)
         </v-toolbar-title>
@@ -222,9 +232,9 @@ onMounted( () => {
     <v-list density="compact" >
         <v-list-item v-for="(element, index) in inactiveSongs" :key="index">
             <template v-slot:prepend>
-                        <v-icon icon="mdi-plus-circle-outline" 
-                            @click="add(index)"
-                        ></v-icon>
+                <v-icon icon="mdi-plus-circle-outline" 
+                    @click="add(index)"
+                ></v-icon>
             </template>
             <PlayButton 
                 :url="element.url" 
