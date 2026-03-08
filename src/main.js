@@ -1,35 +1,13 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-// Vuetify
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+// plugins (pinia, vuetify, ...)
+import { registerPlugins } from '@/plugins';
 
 // Components
 import App from './App.vue'
 
-const vuetify = createVuetify({
-  components,
-  directives,
-  theme: {
-    defaultTheme: 'dark'
-  },
-  icons: {
-    defaultSet: 'mdi',
-    aliases,
-    sets: {
-      mdi,
-    },
-  },
-})
-
+// build app
 const app = createApp(App)
-
-app.use(createPinia())
-app.use(vuetify)
-
+registerPlugins(app);
 app.mount('#app')
