@@ -214,7 +214,6 @@ onMounted( () => {
                         <v-col>
                             #{{ index+1 }}
                             <PlayButton 
-                                v-if="false"
                                 :url="element.url" 
                                 :nowPlaying="nowPlaying" 
                                 :text="element.title +' ('+ element.duration +')'"
