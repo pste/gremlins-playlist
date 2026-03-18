@@ -2,15 +2,11 @@
 
 Playlist maker for live shows (made with Vue3 and Vuetify)
 
-## Recommended IDE Setup
+## Description
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Customize configuration
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
+## Development notes
 
 ```sh
 npm install
