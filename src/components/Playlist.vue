@@ -7,6 +7,7 @@ import draggable from 'vuedraggable'
 import { useTheme } from 'vuetify'
 
 import PlayButton from './PlayButton.vue'
+import TimeClock from './TimeClock.vue'
 
 defineComponent({
     components: {
@@ -29,6 +30,7 @@ const deadTimeSecs = ref(20);
 const openSnackCopied = ref(false);
 const expandDetails = ref(false);
 const nowPlaying = ref('');
+const startTime = ref(moment.duration());
 
 // *** methods
 function sortSongs(arr) {
@@ -121,6 +123,25 @@ function copyToClipboard() {
     openSnackCopied.value = true;
 }
 
+// eval song duration until the given song's index
+function clockCalculator(index, startTime) {
+    let secs = activeSongs.value.reduce((acc, song, idx) => {
+        if (idx <= index) {
+            let duration = isReactive(song)? toRaw(song).duration : song.duration;
+            let time = (duration.length === 4) ? "00:0"+duration : "00:"+duration; // to have this fmt: 00:04:35
+            return acc + moment.duration(time).as('seconds') + deadTimeSecs.value;
+        }
+        else {
+            return acc;
+        }
+    }, 0);
+    //
+    // const start = startTime.value.as('seconds');
+    //const tot = (start + secs) * 1000;
+    //return moment.utc(tot).format("HH:mm:ss");
+    return 0; //TODO
+}
+
 // *** computed
 const totalTime = computed(() => {
     let secs = activeSongs.value.reduce((acc, song) => {
@@ -177,6 +198,11 @@ onMounted( () => {
         prepend-icon="mdi-clock-outline"
     ></v-slider>
 
+    <TimeClock 
+        @setclock="(newTime) => startTime = newTime"
+    ></TimeClock>
+
+    <!-- HEADER -->
     <v-toolbar :color="toolbarColor" density="compact" >
         <v-toolbar-title>
             Duration {{ totalTime }} ({{activeSongs.length}} brani)
@@ -194,6 +220,7 @@ onMounted( () => {
         ></v-btn>
     </v-toolbar>
 
+    <!-- PLAYLIST 1 -->
     <v-list density="compact" >
         <draggable v-model="activeSongs" 
                     item-key="id"
@@ -212,23 +239,38 @@ onMounted( () => {
                     
                     <v-row>
                         <v-col>
-                            #{{ index+1 }}
-                            <PlayButton 
-                                :url="element.url" 
-                                :nowPlaying="nowPlaying" 
-                                :text="element.title +' ('+ element.duration +')'"
-                                @click="playPause(element.url)" 
-                            />
+                            <div class="parent-block">
+                                <PlayButton v-if="false"
+                                    :url="element.url" 
+                                    :nowPlaying="nowPlaying"
+                                    @click="playPause(element.url)" 
+                                />
+                                <span class="left-block">
+                                    #{{ index+1 }} {{ element.title +' ('+ element.duration +')' }}
+                                </span>
+                                <span class="right-block">
+                                    {{ (element.base)?'B':'' }}
+                                    {{ (element.keyboard)?'K':'' }}
+                                </span>
+                            </div>
                         </v-col>
-                        <v-col v-if="expandDetails">{{ element.intro }}</v-col>
+                        <v-col v-if="expandDetails">
+                            <span v-if="false" style="margin-right:10px">
+                                {{ (element.base)?'[B]':'' }}
+                                {{ (element.keyboard)?'[K]':'' }}
+                            </span>
+                            <span>{{ element.intro }}</span>
+                        </v-col>
                         <v-col v-if="expandDetails">{{ element.presenter }}</v-col>
                         <v-col v-if="expandDetails">{{ element.bpm.join(',') }}</v-col>
+                        <v-col>{{ clockCalculator(index, startTime) }}</v-col>
                     </v-row>
                 </v-list-item>
             </template>
         </draggable>
     </v-list>
 
+    <!-- PLAYLIST 2 -->
     <v-list density="compact" >
         <v-list-item v-for="(element, index) in inactiveSongs" :key="index">
             <template v-slot:prepend>
@@ -253,5 +295,18 @@ onMounted( () => {
 <style scoped>
 .clickable {
     cursor:pointer;
+}
+
+.parent-block {
+  display: flex;
+}
+
+.left-block {
+  text-align: laft;
+}
+
+.right-block {
+  margin-left: auto; /* Pushes the span to the right */
+  text-align: right;
 }
 </style>
