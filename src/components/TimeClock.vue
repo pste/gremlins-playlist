@@ -1,6 +1,6 @@
 <script setup>
 import moment from 'moment'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 const emits = defineEmits(['setclock'])
 
 const minutes = ref(0)
@@ -15,18 +15,73 @@ const fullTime = computed(() => {
     });
 })
 
+// *** watch
+watch(fullTime, (newVal, oldVal) => {
+    emits('setclock', fullTime.value);
+})
+
+// *** init
 onMounted(() => {
-    emits('setclock', fullTime);
+    emits('setclock', fullTime.value);
 })
 </script>
 
 <template>
-    <v-container style="max-width:344px; text-align: left;">
-        <v-row>
-            <v-label text="Start At"></v-label>
-            <v-text-field label="hh" v-model="hours" type="number" width="30" @update:model-value="$emit('setclock', fullTime)"></v-text-field>
-            :
-            <v-text-field label="mm" v-model="minutes" type="number" width="30" @update:model-value="$emit('setclock', fullTime)"></v-text-field>
-        </v-row>
-    </v-container>
+    <div class="timeclock">
+        <v-icon icon="mdi-clock-outline" class="timeclock-icon" />
+        <span class="timeclock-label">Start At</span>
+        <v-text-field
+            v-model="hours"
+            type="number"
+            label="hh"
+            density="compact"
+            variant="outlined"
+            hide-details
+            :min="0"
+            :max="23"
+            class="timeclock-field"
+        />
+        <span class="timeclock-sep">:</span>
+        <v-text-field
+            v-model="minutes"
+            type="number"
+            label="mm"
+            density="compact"
+            variant="outlined"
+            hide-details
+            :min="0"
+            :max="59"
+            class="timeclock-field"
+        />
+    </div>
 </template>
+
+<style scoped>
+.timeclock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 2px;
+}
+
+.timeclock-icon {
+    opacity: 0.7;
+}
+
+.timeclock-label {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    white-space: nowrap;
+}
+
+.timeclock-field {
+    width: 85px;
+}
+
+.timeclock-sep {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    opacity: 0.8;
+}
+</style>

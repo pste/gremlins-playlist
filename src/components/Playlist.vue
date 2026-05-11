@@ -124,9 +124,9 @@ function copyToClipboard() {
 }
 
 // eval song duration until the given song's index
-function clockCalculator(index, startTime) {
+function clockCalculator(index) {
     let secs = activeSongs.value.reduce((acc, song, idx) => {
-        if (idx <= index) {
+        if (idx < index) {
             let duration = isReactive(song)? toRaw(song).duration : song.duration;
             let time = (duration.length === 4) ? "00:0"+duration : "00:"+duration; // to have this fmt: 00:04:35
             return acc + moment.duration(time).as('seconds') + deadTimeSecs.value;
@@ -136,10 +136,9 @@ function clockCalculator(index, startTime) {
         }
     }, 0);
     //
-    // const start = startTime.value.as('seconds');
-    //const tot = (start + secs) * 1000;
-    //return moment.utc(tot).format("HH:mm:ss");
-    return 0; //TODO
+    const start = startTime.value.as('seconds');
+    const tot = (start + secs) * 1000;
+    return moment.utc(tot).format("HH:mm:ss");
 }
 
 // *** computed
@@ -165,7 +164,7 @@ const toolbarColor = computed(() => {
     : 'deep-purple-lighten-4'
 })
 
-//
+// *** init
 onMounted( () => {
     loadPlaylist();
 })
@@ -189,18 +188,24 @@ onMounted( () => {
         label="id"
     ></v-text-field>
 
-    <v-slider
-        v-model="deadTimeSecs"
-        :max="120"
-        :min="5"
-        :step="5"
-        :label="'song idle time ('+deadTimeSecs+' sec)'"
-        prepend-icon="mdi-clock-outline"
-    ></v-slider>
-
-    <TimeClock 
-        @setclock="(newTime) => startTime = newTime"
-    ></TimeClock>
+    <v-row align="center" class="mb-2">
+        <v-col>
+            <v-slider
+                v-model="deadTimeSecs"
+                :max="120"
+                :min="5"
+                :step="5"
+                :label="'song idle time ('+deadTimeSecs+' sec)'"
+                prepend-icon="mdi-clock-start"
+                hide-details
+            ></v-slider>
+        </v-col>
+        <v-col cols="auto">
+            <TimeClock
+                @setclock="(newTime) => startTime = newTime"
+            />
+        </v-col>
+    </v-row>
 
     <!-- HEADER -->
     <v-toolbar :color="toolbarColor" density="compact" >
@@ -263,7 +268,7 @@ onMounted( () => {
                         </v-col>
                         <v-col v-if="expandDetails">{{ element.presenter }}</v-col>
                         <v-col v-if="expandDetails">{{ element.bpm.join(',') }}</v-col>
-                        <v-col>{{ clockCalculator(index, startTime) }}</v-col>
+                        <v-col>{{ clockCalculator(index) }}</v-col>
                     </v-row>
                 </v-list-item>
             </template>
