@@ -3,13 +3,10 @@ import moment from 'moment'
 import { ref, computed, watch, onMounted } from 'vue'
 const emits = defineEmits(['setclock'])
 
-const props = withDefaults(defineProps({
-    initialHours: { type: Number },
-    initialMinutes: { type: Number },
-}), {
-    initialHours: 22,
-    initialMinutes: 0,
-})
+const props = defineProps({
+    initialHours: { type: Number, default: 22 },
+    initialMinutes: { type: Number, default: 0 },
+});
 
 const hours = ref(props.initialHours)
 const minutes = ref(props.initialMinutes)
