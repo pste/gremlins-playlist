@@ -3,8 +3,20 @@ import moment from 'moment'
 import { ref, computed, watch, onMounted } from 'vue'
 const emits = defineEmits(['setclock'])
 
-const minutes = ref(0)
-const hours = ref(22)
+const props = withDefaults(defineProps({
+    initialHours: { type: Number },
+    initialMinutes: { type: Number },
+}), {
+    initialHours: 22,
+    initialMinutes: 0,
+})
+
+const hours = ref(props.initialHours)
+const minutes = ref(props.initialMinutes)
+
+// *** watches (to init the component from the parent)
+watch(() => props.initialHours, (val) => { hours.value = val; })
+watch(() => props.initialMinutes, (val) => { minutes.value = val; })
 
 // *** computed
 const fullTime = computed(() => {

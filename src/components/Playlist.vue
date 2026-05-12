@@ -5,7 +5,7 @@ import moment from 'moment'
 import { defineComponent, computed, ref, toRaw, isReactive, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 import { useTheme } from 'vuetify'
-
+// locals
 import PlayButton from './PlayButton.vue'
 import TimeClock from './TimeClock.vue'
 
@@ -31,6 +31,8 @@ const openSnackCopied = ref(false);
 const expandDetails = ref(false);
 const nowPlaying = ref('');
 const startTime = ref(moment.duration());
+const clockInitHours = ref(22);
+const clockInitMinutes = ref(0);
 
 // *** methods
 function sortSongs(arr) {
@@ -66,29 +68,23 @@ function copyTable() {
 }
 
 // read the querystring to get and load a playlist
-function loadPlaylist() {
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('playlistid')) {
-        let items = urlParams.get('playlistid').match(/.{1,2}/g); // get param value + split every 2 chars
-        let ids = items.map( hexid => Number('0x'+hexid));
-        //console.log(items)
-        // reset and reload
-        activeSongs.value = [];
-        inactiveSongs.value = [];
-        ids.forEach( id => {
-            let idx = fulllist.findIndex(el => el.id === id);
-            if (idx >= 0) {
-                let rm = fulllist.splice(idx, 1);
-                activeSongs.value.push(rm[0]);
-            }
-        })
-        inactiveSongs.value = sortSongs(fulllist);
-        //console.log("inactive loaded " + inactiveSongs.value.length);
-        //console.log("active loaded " + activeSongs.value.length);
-    }
-    else {
-        activeSongs.value = fulllist;
-    }
+function loadPlaylist(playlistid) {
+    let items = playlistid.match(/.{1,2}/g); // get param value + split every 2 chars
+    let ids = items.map( hexid => Number('0x'+hexid));
+    //console.log(items)
+    // reset and reload
+    activeSongs.value = [];
+    inactiveSongs.value = [];
+    ids.forEach( id => {
+        let idx = fulllist.findIndex(el => el.id === id);
+        if (idx >= 0) {
+            let rm = fulllist.splice(idx, 1);
+            activeSongs.value.push(rm[0]);
+        }
+    })
+    inactiveSongs.value = sortSongs(fulllist);
+    //console.log("inactive loaded " + inactiveSongs.value.length);
+    //console.log("active loaded " + activeSongs.value.length);
 }
 
 // play/pause a song
@@ -118,7 +114,9 @@ function toHex( x ) {
 
 // copy playlist id to clipboard
 function copyToClipboard() {
-    const url = `${import.meta.env.VITE_PAGEURL}/?playlistid=${playlistId.value}`
+    const clockStr = moment.utc(startTime.value.as('milliseconds')).format('HH:mm');
+    const base = window.location.origin + window.location.pathname;
+    const url = `${base}?playlistid=${playlistId.value}&idle=${deadTimeSecs.value}&clock=${clockStr}`
     navigator.clipboard.writeText(url);
     openSnackCopied.value = true;
 }
@@ -166,7 +164,28 @@ const toolbarColor = computed(() => {
 
 // *** init
 onMounted( () => {
-    loadPlaylist();
+    let urlParams = new URLSearchParams(window.location.search);
+
+    //
+    if (urlParams.has('playlistid')) {
+        let playlistid = urlParams.get('playlistid');
+        loadPlaylist(playlistid);
+    }
+    else {
+        activeSongs.value = fulllist;
+    }
+
+    //
+    if (urlParams.has('idle')) {
+        deadTimeSecs.value = Number(urlParams.get('idle'));
+    }
+
+    //
+    if (urlParams.has('clock')) {
+        const [h, m] = urlParams.get('clock').split(':').map(Number);
+        clockInitHours.value = h;
+        clockInitMinutes.value = m;
+    }
 })
 </script>
 
@@ -202,6 +221,8 @@ onMounted( () => {
         </v-col>
         <v-col cols="auto">
             <TimeClock
+                :initial-hours="clockInitHours"
+                :initial-minutes="clockInitMinutes"
                 @setclock="(newTime) => startTime = newTime"
             />
         </v-col>
@@ -235,7 +256,7 @@ onMounted( () => {
             <v-list-item class="active">
                     <template v-slot:prepend>
                         <v-icon icon="mdi-minus-circle-outline" @click="toggle(index)" ></v-icon>
-                        <v-icon icon="mdi-drag" class="handle clickable"></v-icon>
+                        <v-icon icon="mdi-drag" class="handle clickable drag-btn"></v-icon>
                         <!--
                         <v-icon icon="mdi-stop-circle-outline" v-if="nowPlaying === element.url" @click="playPause()"></v-icon>
                         <v-icon icon="mdi-play-circle-outline" v-else-if="element.url" @click="playPause(element.url)"></v-icon>
@@ -317,5 +338,9 @@ onMounted( () => {
 .right-block {
   margin-left: auto; /* Pushes the span to the right */
   text-align: right;
+}
+
+.drag-btn {
+    margin-left:15px
 }
 </style>
