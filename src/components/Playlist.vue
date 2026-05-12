@@ -274,17 +274,13 @@ onMounted( () => {
                                 <span class="left-block">
                                     #{{ index+1 }} {{ element.title +' ('+ element.duration +')' }}
                                 </span>
-                                <span class="right-block">
+                                <span class="right-block d-none d-sm-inline">
                                     {{ (element.base)?'B':'' }}
                                     {{ (element.keyboard)?'K':'' }}
                                 </span>
                             </div>
                         </v-col>
                         <v-col v-if="expandDetails">
-                            <span v-if="false" style="margin-right:10px">
-                                {{ (element.base)?'[B]':'' }}
-                                {{ (element.keyboard)?'[K]':'' }}
-                            </span>
                             <span>{{ element.intro }}</span>
                         </v-col>
                         <v-col v-if="expandDetails">{{ element.presenter }}</v-col>
