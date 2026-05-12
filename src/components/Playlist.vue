@@ -54,20 +54,20 @@ function toggle( idx ) {
 }
 
 function copyTable() {
-    let data = `${ playlistId.value }\t${ totalTime.value } (${ activeSongs.value.length })\n`
+    let data = `${ playlistId.value }\t${ totalTime.value } (${ activeSongs.value.length })\n`;
     //
     activeSongs.value.forEach( (item,idx) => {
         let song = isReactive(item)? toRaw(item) : item;
-        let hasBase = (element.base)?'B':'';
-        let hasKeyboard = (element.keyboard)?'K':'';
+        let hasBase = (song.base)?'B':'';
+        let hasKeyboard = (song.keyboard)?'K':'';
         let title = `#${idx+1} ${song.title} (${song.duration})     ${hasBase}${hasKeyboard}`;
         data += `${title.trim()}\t${song.intro}\t${song.presenter}\t${song.bpm.join(',')}\t${clockCalculator(idx)}\n`
         idx++
-    })
+    });
     //
-    navigator.clipboard.writeText(data)
+    navigator.clipboard.writeText(data);
     //
-    openSnackCopied.value = true
+    openSnackCopied.value = true;
 }
 
 // read the querystring to get and load a playlist
