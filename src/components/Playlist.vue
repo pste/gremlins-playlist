@@ -57,8 +57,11 @@ function copyTable() {
     let data = `${ playlistId.value }\t${ totalTime.value } (${ activeSongs.value.length })\n`
     //
     activeSongs.value.forEach( (item,idx) => {
-        let song = isReactive(item)? toRaw(item) : item
-        data += `#${idx+1} ${song.title} (${song.duration})\t${song.intro}\t${song.presenter}\t${song.bpm.join(',')}\n`
+        let song = isReactive(item)? toRaw(item) : item;
+        let hasBase = (element.base)?'B':'';
+        let hasKeyboard = (element.keyboard)?'K':'';
+        let title = `#${idx+1} ${song.title} (${song.duration})     ${hasBase}${hasKeyboard}`;
+        data += `${title.trim()}\t${song.intro}\t${song.presenter}\t${song.bpm.join(',')}\t${clockCalculator(idx)}\n`
         idx++
     })
     //
