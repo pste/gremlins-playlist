@@ -284,11 +284,15 @@ onMounted( () => {
                 ></v-icon>
             </template>
             <PlayButton 
+                v-if="false"
                 :url="element.url" 
                 :nowPlaying="nowPlaying"
                 @click="playPause(element.url)" 
                 :text="element.title +' ('+ element.duration +')'"
             />
+            <span class="left-block">
+                {{ element.title +' ('+ element.duration +')' }}
+            </span>
         </v-list-item>
     </v-list>
     
