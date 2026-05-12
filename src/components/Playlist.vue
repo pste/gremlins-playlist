@@ -268,7 +268,7 @@ onMounted( () => {
                         </v-col>
                         <v-col v-if="expandDetails">{{ element.presenter }}</v-col>
                         <v-col v-if="expandDetails">{{ element.bpm.join(',') }}</v-col>
-                        <v-col>{{ clockCalculator(index) }}</v-col>
+                        <v-col class="right-block">{{ clockCalculator(index) }}</v-col>
                     </v-row>
                 </v-list-item>
             </template>
